@@ -10,7 +10,9 @@ public class ProjectUtils {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		double value = 1.4445;
+		value = Math.round(value * 1000.0) / 1000.0;
+		System.out.println(value);
 	}
 
 	public static Map<Integer, List<Integer>> returnInitialAdjMap(
@@ -75,10 +77,22 @@ public class ProjectUtils {
 		}
 		return initialAdjMatrix;
 	}
-	
-	public static Double[][] normalizeMatrixColWise(Double[][] inputMatrix){
-	
-		
+
+	public static Double[][] normalizeMatrixColWise(Double[][] inputMatrix) {
+
+		int j = inputMatrix[0].length;
+		int i = inputMatrix.length;
+		for (int c1 = 0; c1 < j; c1++) {
+			double sum = 0;
+			for (int c2 = 0; c2 < i; c2++) {
+				sum = sum + inputMatrix[c2][c1];
+			}
+			for (int c2 = 0; c2 < i; c2++) {
+				double temp = inputMatrix[c2][c1] / sum;
+				temp = Math.round(temp * 1000.0) / 1000.0;
+				inputMatrix[c2][c1] = temp;
+			}
+		}
 		return null;
 	}
 }
