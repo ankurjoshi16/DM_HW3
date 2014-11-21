@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class ProjectUtils {
 
@@ -26,15 +27,15 @@ public class ProjectUtils {
 		}
 	}
 
-	/*public static double[][] expandMatrix(double[][] inputM) {
-
-		for (int i = 0; i < inputM.length; i++)
-			for (int j = 0; j < inputM.length; j++)
-				for (int k = 0; k < inputM.length; k++)
-					inputM[i][j] = inputM[i][j] + (inputM[i][k] * inputM[k][j]);
-
-		return inputM;
-	}*/
+	/*
+	 * public static double[][] expandMatrix(double[][] inputM) {
+	 * 
+	 * for (int i = 0; i < inputM.length; i++) for (int j = 0; j <
+	 * inputM.length; j++) for (int k = 0; k < inputM.length; k++) inputM[i][j]
+	 * = inputM[i][j] + (inputM[i][k] * inputM[k][j]);
+	 * 
+	 * return inputM; }
+	 */
 
 	public static double[][] addSelfLoop(double[][] inputM) {
 		int i = inputM.length;
@@ -100,10 +101,7 @@ public class ProjectUtils {
 	public static void printFinalMatrix(double[][] inputM) {
 
 		for (int i = 0; i < inputM.length; i++) {
-			// System.out.print("For Node number " + i + "  :");
-			// System.out.println("\n");
 			for (int j = 0; j < inputM[0].length; j++) {
-				double temp = inputM[i][j];
 				System.out.print(inputM[i][j] + "  ");
 			}
 			System.out.println("\n");
@@ -152,10 +150,10 @@ public class ProjectUtils {
 		return labelIdMappings;
 	}
 
-	public static void writeFileForPatek(double[][] inputM,
+	public static void writeFileForPatek(List<Cluster> cS,
 			LabelIdMappings labelIdMappings) throws IOException {
 
-		File file = new File("output.txt");
+		File file = new File("output.clu");
 		if (!file.exists()) {
 			file.delete();
 		}
@@ -163,14 +161,18 @@ public class ProjectUtils {
 		FileWriter fw = new FileWriter(file);
 		BufferedWriter bw = new BufferedWriter(fw);
 		StringBuilder str = new StringBuilder();
+		TreeMap<Integer, Integer> indexClusterMap = new TreeMap<Integer, Integer>();
 		str.append("*Vertices " + (labelIdMappings.finalCount - 1));
-		for (int j = 0; j < inputM.length; j++) {
-			for (int i = 0; i < inputM.length; i++) {
-
-				if (inputM[i][j] == 1 && i != 0) {
-					str.append("\n" + labelIdMappings.idLabelMap.get(i));
-				}
+		int cluster = 1;
+		for (int i = 0; i < cS.size(); i++) {
+			for (int j : cS.get(i).getClusterPoints()) {
+				indexClusterMap.put(j, cluster);
 			}
+			cluster++;
+		}
+
+		for (int i : indexClusterMap.keySet()) {
+			str.append("\n" + indexClusterMap.get(i));
 		}
 
 		bw.write(str.toString());
@@ -193,20 +195,18 @@ public class ProjectUtils {
 		return attracterSet;
 	}
 
-	
-	
 	public static double[][] multiply(double[][] a, double[][] b) {
-	       int rowsInA = a.length;
-	       int columnsInA = a[0].length; // same as rows in B
-	       int columnsInB = b[0].length;
-	       double[][] c = new double[rowsInA][columnsInB];
-	       for (int i = 0; i < rowsInA; i++) {
-	           for (int j = 0; j < columnsInB; j++) {
-	               for (int k = 0; k < columnsInA; k++) {
-	                   c[i][j] = c[i][j] + a[i][k] * b[k][j];
-	               }
-	           }
-	       }
-	       return c;
-	   }
+		int rowsInA = a.length;
+		int columnsInA = a[0].length; // same as rows in B
+		int columnsInB = b[0].length;
+		double[][] c = new double[rowsInA][columnsInB];
+		for (int i = 0; i < rowsInA; i++) {
+			for (int j = 0; j < columnsInB; j++) {
+				for (int k = 0; k < columnsInA; k++) {
+					c[i][j] = c[i][j] + a[i][k] * b[k][j];
+				}
+			}
+		}
+		return c;
+	}
 }

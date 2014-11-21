@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MCLAlgorithm {
 
@@ -8,22 +10,8 @@ public class MCLAlgorithm {
 		// TODO Auto-generated method stub
 
 		MCLAlgorithm mcl = new MCLAlgorithm();
-		mcl.runMCLAlgorithm("attweb_net.txt", 2, 2);
-		// String asj = "ankur		joshi";
-		// System.out.println(asj.indexOf("\t"));
-
-		/*
-		 * double td[][] = new
-		 * double[][]{{1,1,0,0,0,1,1,0,0,1,0,0},{1,1,1,0,1,0,0,0,0,0,0,0},
-		 * {0,1,1,1,1,0,0,0,0,0,0,0},{0,0,1,1,0,0,0,1,1,0,1,0},
-		 * {0,1,1,0,1,0,1,1,0,0,0,0},{1,0,0,0,0,1,0,0,0,1,0,0},
-		 * {1,0,0,0,1,0,1,0,0,1,0,0},{0,0,0,1,1,0,0,1,0,0,1,0},
-		 * {0,0,0,1,0,0,0,0,1,0,1,1},{1,0,0,0,0,1,1,0,0,1,0,0},
-		 * {0,0,0,1,0,0,0,1,1,0,1,1},{0,0,0,0,0,0,0,0,1,0,1,1}, };
-		 */
-
-		// td = ProjectUtils.normalizeMatrixColWise(td);
-		// ProjectUtils.printFinalMatrix(td);
+		mcl.runMCLAlgorithm("attweb_net.txt", 2,1.35 );
+	
 	}
 
 	public void runMCLAlgorithm(String fileName, int expandBy, double inflateBy)
@@ -35,10 +23,7 @@ public class MCLAlgorithm {
 
 		adjMatrix = ProjectUtils.addSelfLoop(adjMatrix);
 		adjMatrix = ProjectUtils.normalizeMatrixColWise(adjMatrix);
-		// ProjectUtils.printFinalMatrix(adjMatrix);
-
 		double[][] prevMatrix = new double[adjMatrix.length][adjMatrix[0].length];
-		int cnt = 0;
 		while (isEqual(adjMatrix, prevMatrix) == false) {
 			for (int i = 0; i < adjMatrix.length; i++) {
 				for (int j = 0; j < adjMatrix.length; j++) {
@@ -47,53 +32,32 @@ public class MCLAlgorithm {
 			}
 
 			adjMatrix = ProjectUtils.multiply(adjMatrix, adjMatrix);
-			// adjMatrix = ProjectUtils.inflateMatrixBy(adjMatrix, inflateBy);
 			adjMatrix = ProjectUtils.inflateMatrixBy(adjMatrix, inflateBy);
 			adjMatrix = ProjectUtils.normalizeMatrixColWise(adjMatrix);
-			// ProjectUtils.printFinalMatrix(adjMatrix);
-			// break;
-			// System.out.println("Previous Matrix was: ");
-			// ProjectUtils.printFinalMatrix(prevMatrix);
-			// System.out.println("Final matrix is:");
+			
 
 		}
-		// ProjectUtils.printFinalMatrix(adjMatrix);
-		ProjectUtils.writeFileForPatek(adjMatrix, labelIdMappings);
-		System.out.println(ProjectUtils.getAttracterSet(adjMatrix));
-		System.out.println(ProjectUtils.getAttracterSet(adjMatrix).size());
+		ProjectUtils.printFinalMatrix(adjMatrix);
+		
 
+		Set<Integer> partOfClusters = new HashSet<Integer>();
 		List<Cluster> clusters = new ArrayList<Cluster>();
 
-		List<Integer> attrSet = new ArrayList<Integer>(ProjectUtils.getAttracterSet(adjMatrix));
-		
-		
-		double[] [] initMap = ProjectUtils.getInitialAdjMatrix(fileName, labelIdMappings);
-		for(int i:attrSet){
-			for(int j:attrSet){
-				if(i==j){
-					continue;
-				}
-				else if(initMap[i][j]>0.0){
-					System.out.println("yup" + i + "  "+j);
-				}
-				else{
-					System.out.println("No Match");
-				}
-			}
-		}
-		
+		double[][] initMap = ProjectUtils.getInitialAdjMatrix(fileName,
+				labelIdMappings);
+
 		for (int i : ProjectUtils.getAttracterSet(adjMatrix)) {
 			Cluster c = new Cluster(i);
 			clusters.add(c);
+			partOfClusters.add(i);
 		}
 
 		boolean flag = true;
 		while (flag) {
 			flag = false;
 			int size = clusters.size();
-			for (int i = 0; i < size ; i++) {
+			for (int i = 0; i < size; i++) {
 				for (int j = 0; j < size; j++) {
-					System.out.println("i : " +i +"  j: "+j + " size: "+ size);
 					if (i == j) {
 						continue;
 					} else if (clusters.get(i).isMergePossible(clusters.get(j),
@@ -109,9 +73,13 @@ public class MCLAlgorithm {
 			}
 
 		}
-		
+
+		for (Cluster c : clusters) {
+			c.expandCluster(adjMatrix, partOfClusters);
+		}
+
 		System.out.println(clusters.size());
-		ProjectUtils.writeFileForPatek(adjMatrix, labelIdMappings);
+		ProjectUtils.writeFileForPatek(clusters, labelIdMappings);
 
 	}
 
