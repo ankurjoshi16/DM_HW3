@@ -10,8 +10,10 @@ public class MCLAlgorithm {
 		// TODO Auto-generated method stub
 
 		MCLAlgorithm mcl = new MCLAlgorithm();
-		mcl.runMCLAlgorithm("attweb_net.txt", 2,1.35 );
-	
+		// mcl.runMCLAlgorithm("attweb_net.txt", 2,1.35 );
+		 mcl.runMCLAlgorithm("physics_collaboration_net.txt", 2, 1.25);
+		//mcl.runMCLAlgorithm("yeast_undirected_metabolic.txt", 2, 1.205);
+
 	}
 
 	public void runMCLAlgorithm(String fileName, int expandBy, double inflateBy)
@@ -23,10 +25,10 @@ public class MCLAlgorithm {
 
 		adjMatrix = ProjectUtils.addSelfLoop(adjMatrix);
 		adjMatrix = ProjectUtils.normalizeMatrixColWise(adjMatrix);
-		double[][] prevMatrix = new double[adjMatrix.length][adjMatrix[0].length];
+		double[][] prevMatrix = new double[adjMatrix.length][adjMatrix.length];
 		while (isEqual(adjMatrix, prevMatrix) == false) {
-			for (int i = 0; i < adjMatrix.length; i++) {
-				for (int j = 0; j < adjMatrix.length; j++) {
+			for (int i = 1; i < adjMatrix.length; i++) {
+				for (int j = 1; j < adjMatrix.length; j++) {
 					prevMatrix[i][j] = adjMatrix[i][j];
 				}
 			}
@@ -34,11 +36,12 @@ public class MCLAlgorithm {
 			adjMatrix = ProjectUtils.multiply(adjMatrix, adjMatrix);
 			adjMatrix = ProjectUtils.inflateMatrixBy(adjMatrix, inflateBy);
 			adjMatrix = ProjectUtils.normalizeMatrixColWise(adjMatrix);
-			
+			adjMatrix = ProjectUtils.pruneMatrix(adjMatrix);
+
+			// ProjectUtils.printFinalMatrix(adjMatrix);
+			// break;
 
 		}
-		ProjectUtils.printFinalMatrix(adjMatrix);
-		
 
 		Set<Integer> partOfClusters = new HashSet<Integer>();
 		List<Cluster> clusters = new ArrayList<Cluster>();
@@ -46,6 +49,9 @@ public class MCLAlgorithm {
 		double[][] initMap = ProjectUtils.getInitialAdjMatrix(fileName,
 				labelIdMappings);
 
+		// ProjectUtils.printFinalMatrix(adjMatrix);
+
+		System.out.println(ProjectUtils.getAttracterSet(adjMatrix));
 		for (int i : ProjectUtils.getAttracterSet(adjMatrix)) {
 			Cluster c = new Cluster(i);
 			clusters.add(c);
@@ -62,6 +68,7 @@ public class MCLAlgorithm {
 						continue;
 					} else if (clusters.get(i).isMergePossible(clusters.get(j),
 							initMap)) {
+						System.out.println("Wrong");
 						clusters.get(i).getClusterPoints()
 								.addAll(clusters.get(j).getClusterPoints());
 						clusters.remove(j);
@@ -78,14 +85,14 @@ public class MCLAlgorithm {
 			c.expandCluster(adjMatrix, partOfClusters);
 		}
 
-		System.out.println(clusters.size());
 		ProjectUtils.writeFileForPatek(clusters, labelIdMappings);
+		System.out.println(clusters.size());
 
 	}
 
 	public boolean isEqual(double[][] m1, double[][] m2) {
-		for (int i = 0; i < m1.length; i++) {
-			for (int j = 0; j < m1.length; j++) {
+		for (int i = 1; i < m1.length; i++) {
+			for (int j = 1; j < m1.length; j++) {
 				if (m1[i][j] != m2[i][j]) {
 					return false;
 				}

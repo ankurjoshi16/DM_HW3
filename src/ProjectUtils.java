@@ -21,7 +21,7 @@ public class ProjectUtils {
 		 * double value = 1.4445; value = Math.round(value * 1000.0) / 1000.0;
 		 * System.out.println(value);
 		 */
-		Map<String, Integer> tm = getLabelIdMap("attweb_net.txt").labelIdMap;
+		Map<String, Integer> tm = getLabelIdMap("yeast_undirected_metabolic.txt").labelIdMap;
 		for (String str : tm.keySet()) {
 			System.out.println(tm.get(str) + "  " + str);
 		}
@@ -39,10 +39,10 @@ public class ProjectUtils {
 
 	public static double[][] addSelfLoop(double[][] inputM) {
 		int i = inputM.length;
-		int j = inputM[0].length;
+		int j = inputM.length;
 
-		for (int cnt1 = 0; cnt1 < i; cnt1++) {
-			for (int cnt2 = 0; cnt2 < j; cnt2++) {
+		for (int cnt1 = 1; cnt1 < i; cnt1++) {
+			for (int cnt2 = 1; cnt2 < j; cnt2++) {
 				if (cnt1 == cnt2) {
 					inputM[cnt1][cnt2] = 1.0;
 				}
@@ -75,12 +75,12 @@ public class ProjectUtils {
 
 		int j = inputMatrix[0].length;
 		int i = inputMatrix.length;
-		for (int c1 = 0; c1 < j; c1++) {
+		for (int c1 = 1; c1 < j; c1++) {
 			double sum = 0;
-			for (int c2 = 0; c2 < i; c2++) {
+			for (int c2 = 1; c2 < i; c2++) {
 				sum = sum + inputMatrix[c2][c1];
 			}
-			for (int c2 = 0; c2 < i; c2++) {
+			for (int c2 = 1; c2 < i; c2++) {
 				double temp = inputMatrix[c2][c1] / sum;
 				inputMatrix[c2][c1] = temp;
 			}
@@ -90,8 +90,8 @@ public class ProjectUtils {
 
 	public static double[][] inflateMatrixBy(double[][] inputMatrix,
 			double param) {
-		for (int j = 0; j < inputMatrix.length; j++) {
-			for (int i = 0; i < inputMatrix.length; i++) {
+		for (int j = 1; j < inputMatrix.length; j++) {
+			for (int i = 1; i < inputMatrix.length; i++) {
 				inputMatrix[i][j] = Math.pow(inputMatrix[i][j], param);
 			}
 		}
@@ -100,8 +100,8 @@ public class ProjectUtils {
 
 	public static void printFinalMatrix(double[][] inputM) {
 
-		for (int i = 0; i < inputM.length; i++) {
-			for (int j = 0; j < inputM[0].length; j++) {
+		for (int i = 1; i < inputM.length; i++) {
+			for (int j = 1; j < inputM.length; j++) {
 				System.out.print(inputM[i][j] + "  ");
 			}
 			System.out.println("\n");
@@ -182,11 +182,9 @@ public class ProjectUtils {
 	public static List<Integer> getAttracterSet(double[][] inputM) {
 		List<Integer> attracterSet = new ArrayList<Integer>();
 
-		for (int i = 0; i < inputM.length; i++) {
-			if (i == 0) {
-				continue;
-			}
-			for (int j = 0; j < inputM.length; j++) {
+		for (int i = 1; i < inputM.length; i++) {
+
+			for (int j = 1; j < inputM.length; j++) {
 				if (i == j & inputM[i][j] != 0) {
 					attracterSet.add(i);
 				}
@@ -197,16 +195,30 @@ public class ProjectUtils {
 
 	public static double[][] multiply(double[][] a, double[][] b) {
 		int rowsInA = a.length;
-		int columnsInA = a[0].length; // same as rows in B
-		int columnsInB = b[0].length;
+		int columnsInA = a.length; // same as rows in B
+		int columnsInB = b.length;
 		double[][] c = new double[rowsInA][columnsInB];
-		for (int i = 0; i < rowsInA; i++) {
-			for (int j = 0; j < columnsInB; j++) {
-				for (int k = 0; k < columnsInA; k++) {
+		for (int i = 1; i < rowsInA; i++) {
+			for (int j = 1; j < columnsInB; j++) {
+				for (int k = 1; k < columnsInA; k++) {
 					c[i][j] = c[i][j] + a[i][k] * b[k][j];
 				}
 			}
 		}
 		return c;
+	}
+
+	public static double[][] pruneMatrix(double[][] a) {
+
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a.length; j++) {
+				if (a[i][j] < 0.00000005) {
+					a[i][j] = 0;
+				} else if (a[i][j] > 0.9999999) {
+					a[i][j] = 1;
+				}
+			}
+		}
+		return a;
 	}
 }
