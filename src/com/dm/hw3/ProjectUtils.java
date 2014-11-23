@@ -1,3 +1,5 @@
+package com.dm.hw3;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -150,10 +152,10 @@ public class ProjectUtils {
 		return labelIdMappings;
 	}
 
-	public static void writeFileForPatek(List<Cluster> cS,
+	public static OutputObject writeFileForPatek(List<Cluster> cS,
 			LabelIdMappings labelIdMappings) throws IOException {
 
-		File file = new File("output.clu");
+		File file = new File("pajekCluFiles" + File.separator + "output.clu");
 		if (!file.exists()) {
 			file.delete();
 		}
@@ -177,6 +179,9 @@ public class ProjectUtils {
 
 		bw.write(str.toString());
 		bw.close();
+		OutputObject oo = new OutputObject();
+		oo.outputStr = str.toString();
+		return oo;
 	}
 
 	public static List<Integer> getAttracterSet(double[][] inputM) {
@@ -193,15 +198,21 @@ public class ProjectUtils {
 		return attracterSet;
 	}
 
-	public static double[][] multiply(double[][] a, double[][] b) {
-		int rowsInA = a.length;
-		int columnsInA = a.length; // same as rows in B
-		int columnsInB = b.length;
-		double[][] c = new double[rowsInA][columnsInB];
-		for (int i = 1; i < rowsInA; i++) {
-			for (int j = 1; j < columnsInB; j++) {
-				for (int k = 1; k < columnsInA; k++) {
-					c[i][j] = c[i][j] + a[i][k] * b[k][j];
+	public static double[][] multiply(double[][] m1, double[][] m2) {
+		/*
+		 * int rowsInA = a.length; int columnsInA = a.length; // same as rows in
+		 * B int columnsInB = b.length; double[][] c = new
+		 * double[rowsInA][columnsInB]; for (int i = 1; i < rowsInA; i++) { for
+		 * (int j = 1; j < columnsInB; j++) { for (int k = 1; k < columnsInA;
+		 * k++) { c[i][j] = c[i][j] + a[i][k] * b[k][j]; } } } return c;
+		 */
+		int len = m1.length;
+
+		double[][] c = new double[len][len];
+		for (int i = 1; i < len; i++) {
+			for (int j = 1; j < len; j++) {
+				for (int k = 1; k < len; k++) {
+					c[i][j] = c[i][j] + (m1[i][k] * m2[k][j]);
 				}
 			}
 		}

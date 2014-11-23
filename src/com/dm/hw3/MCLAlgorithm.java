@@ -1,3 +1,5 @@
+package com.dm.hw3;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,12 +13,12 @@ public class MCLAlgorithm {
 
 		MCLAlgorithm mcl = new MCLAlgorithm();
 		// mcl.runMCLAlgorithm("attweb_net.txt", 2,1.35 );
-		 mcl.runMCLAlgorithm("physics_collaboration_net.txt", 2, 1.25);
+		 mcl.runMCLAlgorithm("inputFiles"+File.separator+"physics_collaboration_net",1.25);
 		//mcl.runMCLAlgorithm("yeast_undirected_metabolic.txt", 2, 1.205);
 
 	}
 
-	public void runMCLAlgorithm(String fileName, int expandBy, double inflateBy)
+	public OutputObject runMCLAlgorithm(String fileName,double inflateBy)
 			throws IOException {
 
 		LabelIdMappings labelIdMappings = ProjectUtils.getLabelIdMap(fileName);
@@ -85,9 +87,9 @@ public class MCLAlgorithm {
 			c.expandCluster(adjMatrix, partOfClusters);
 		}
 
-		ProjectUtils.writeFileForPatek(clusters, labelIdMappings);
 		System.out.println(clusters.size());
-
+		
+		return ProjectUtils.writeFileForPatek(clusters, labelIdMappings);
 	}
 
 	public boolean isEqual(double[][] m1, double[][] m2) {
