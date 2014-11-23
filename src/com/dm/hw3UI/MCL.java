@@ -1,6 +1,5 @@
 package com.dm.hw3UI;
 
-
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -11,7 +10,6 @@ import java.awt.BorderLayout;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
-
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -94,7 +92,7 @@ public class MCL {
 		mnQuery1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				Yea_Met_Nw_Ui qu1 = new Yea_Met_Nw_Ui();
+				Att_web__Nw_Ui qu1 = new Att_web__Nw_Ui();
 				qu1.setVisible(true);
 
 			}
@@ -105,19 +103,18 @@ public class MCL {
 		JMenuItem mnQuery2 = new JMenuItem("Physics Collaboration Network");
 		mnQuery2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Att_web__Nw_Ui qu2 = new Att_web__Nw_Ui();
+				Phy_Col_Nw_Ui qu2 = new Phy_Col_Nw_Ui();
 				qu2.setVisible(true);
 
 			}
 		});
 
 		mnQueries.add(mnQuery2);
-		
-		
+
 		JMenuItem mnQuery3 = new JMenuItem("Yeast Metabolic Network");
 		mnQuery3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Phy_Col_Nw_Ui qu3 = new Phy_Col_Nw_Ui();
+				Yea_Met_Nw_Ui qu3 = new Yea_Met_Nw_Ui();
 				qu3.setVisible(true);
 
 			}
@@ -125,7 +122,7 @@ public class MCL {
 
 		mnQueries.add(mnQuery3);
 
-		JLabel lblNewLabel = new JLabel("Data Minning Homework 3" );
+		JLabel lblNewLabel = new JLabel("Data Minning Homework 3");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Monotype Corsiva", Font.PLAIN, 25));
 		lblNewLabel.setBounds(150, 146, 375, 42);

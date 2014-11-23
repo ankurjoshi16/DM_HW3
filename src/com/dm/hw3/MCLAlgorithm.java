@@ -1,4 +1,5 @@
 package com.dm.hw3;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,18 +13,19 @@ public class MCLAlgorithm {
 		// TODO Auto-generated method stub
 
 		MCLAlgorithm mcl = new MCLAlgorithm();
-		// mcl.runMCLAlgorithm("attweb_net.txt", 2,1.35 );
-		 mcl.runMCLAlgorithm("inputFiles"+File.separator+"physics_collaboration_net",1.25);
-		//mcl.runMCLAlgorithm("yeast_undirected_metabolic.txt", 2, 1.205);
+		mcl.runMCLAlgorithm("attweb_net", 2.0);
+		// mcl.runMCLAlgorithm("physics_collaboration_net",1.25);
+		// mcl.runMCLAlgorithm("yeast_undirected_metabolic.txt", 2, 1.205);
 
 	}
 
-	public OutputObject runMCLAlgorithm(String fileName,double inflateBy)
+	public OutputObject runMCLAlgorithm(String fileName, double inflateBy)
 			throws IOException {
 
-		LabelIdMappings labelIdMappings = ProjectUtils.getLabelIdMap(fileName);
-		double[][] adjMatrix = ProjectUtils.getInitialAdjMatrix(fileName,
-				labelIdMappings);
+		LabelIdMappings labelIdMappings = ProjectUtils
+				.getLabelIdMap("inputFiles" + File.separator + fileName);
+		double[][] adjMatrix = ProjectUtils.getInitialAdjMatrix("inputFiles"
+				+ File.separator + fileName, labelIdMappings);
 
 		adjMatrix = ProjectUtils.addSelfLoop(adjMatrix);
 		adjMatrix = ProjectUtils.normalizeMatrixColWise(adjMatrix);
@@ -48,13 +50,19 @@ public class MCLAlgorithm {
 		Set<Integer> partOfClusters = new HashSet<Integer>();
 		List<Cluster> clusters = new ArrayList<Cluster>();
 
-		double[][] initMap = ProjectUtils.getInitialAdjMatrix(fileName,
-				labelIdMappings);
+		double[][] initMap = ProjectUtils.getInitialAdjMatrix("inputFiles"
+				+ File.separator + fileName, labelIdMappings);
 
 		// ProjectUtils.printFinalMatrix(adjMatrix);
 
-		System.out.println(ProjectUtils.getAttracterSet(adjMatrix));
-		for (int i : ProjectUtils.getAttracterSet(adjMatrix)) {
+		List<Integer> attracterSet = ProjectUtils.getAttracterSet(adjMatrix);
+		OutputObject oo = new OutputObject();
+		oo.outputStr = oo.outputStr + "\nTotal Attracters found:"
+				+ attracterSet.size();
+		oo.outputStr = oo.outputStr + "\nHere are the Attracters: "
+				+ attracterSet;
+
+		for (int i : attracterSet) {
 			Cluster c = new Cluster(i);
 			clusters.add(c);
 			partOfClusters.add(i);
@@ -70,7 +78,7 @@ public class MCLAlgorithm {
 						continue;
 					} else if (clusters.get(i).isMergePossible(clusters.get(j),
 							initMap)) {
-						System.out.println("Wrong");
+
 						clusters.get(i).getClusterPoints()
 								.addAll(clusters.get(j).getClusterPoints());
 						clusters.remove(j);
@@ -83,13 +91,22 @@ public class MCLAlgorithm {
 
 		}
 
+		oo.outputStr = oo.outputStr + "\n" + "The Attracter System is formed as below: (Total Size = "+clusters.size()+")";
+
+		for (Cluster c : clusters) {
+			oo.outputStr = oo.outputStr + "\n" + "{ " + c.getId() + " }";
+		}
+
 		for (Cluster c : clusters) {
 			c.expandCluster(adjMatrix, partOfClusters);
 		}
 
-		System.out.println(clusters.size());
-		
-		return ProjectUtils.writeFileForPatek(clusters, labelIdMappings);
+		ProjectUtils.writeFileForPatek(clusters, labelIdMappings, fileName);
+
+		System.out.println(oo.outputStr);
+
+		return oo;
+
 	}
 
 	public boolean isEqual(double[][] m1, double[][] m2) {

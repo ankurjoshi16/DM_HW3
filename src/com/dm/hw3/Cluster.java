@@ -47,7 +47,13 @@ public class Cluster {
 				}
 			}
 		}
-		
-		
+	}
+	
+	public String getId(){
+		String id ="";
+		for(int i : clusterPoints){
+			id = id+"," +i;
+		}
+		return id.substring(1);
 	}
 }

@@ -77,7 +77,7 @@ public class Phy_Col_Nw_Ui extends JFrame {
 
 		final JTextArea txtrAttractersMerging = new JTextArea();
 		txtrAttractersMerging.setEditable(false);
-		txtrAttractersMerging.setText("Output Window: Attracters Found , Merging sequence (if any)");
+		txtrAttractersMerging.setText("Output Window:");
 		scrollPane_1.setViewportView(txtrAttractersMerging);
 
 		JLabel lblMclExecutionTime = new JLabel("MCL Execution Time :");
@@ -100,7 +100,7 @@ public class Phy_Col_Nw_Ui extends JFrame {
 				try {
 					long current = System.nanoTime();
 					MCLAlgorithm mcl = new MCLAlgorithm();
-					OutputObject oo = mcl.runMCLAlgorithm("inputFiles"+File.separator+"physics_collaboration_net",inflationParam);
+					OutputObject oo = mcl.runMCLAlgorithm("physics_collaboration_net",inflationParam);
 					textField.setText(Double.toString(
 							(System.nanoTime() - current) / 1000000000.0)
 							.substring(0, 4)
@@ -118,7 +118,7 @@ public class Phy_Col_Nw_Ui extends JFrame {
 		btnExecute.setBounds(287, 40, 89, 23);
 		panel.add(btnExecute);
 		
-		JLabel lblTheClustersWill = new JLabel("Inflation Parameter can be changed. The Clusters will be merged based on attracter sets. ");
+		JLabel lblTheClustersWill = new JLabel("Inflation Parameter can be changed. Attracter System will be formed each time. ");
 		lblTheClustersWill.setVerticalAlignment(SwingConstants.TOP);
 		lblTheClustersWill.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblTheClustersWill.setBounds(52, 70, 556, 20);

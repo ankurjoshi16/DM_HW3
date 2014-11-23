@@ -55,7 +55,6 @@ public class ProjectUtils {
 
 	public static double[][] getInitialAdjMatrix(String fileName,
 			LabelIdMappings labelIdMappings) throws IOException {
-
 		double[][] initialAdjMatrix = new double[labelIdMappings.finalCount][labelIdMappings.finalCount];
 		String readLine;
 		FileReader fileReader = new FileReader(fileName);
@@ -152,10 +151,10 @@ public class ProjectUtils {
 		return labelIdMappings;
 	}
 
-	public static OutputObject writeFileForPatek(List<Cluster> cS,
-			LabelIdMappings labelIdMappings) throws IOException {
+	public static void writeFileForPatek(List<Cluster> cS,
+			LabelIdMappings labelIdMappings,String fileName) throws IOException {
 
-		File file = new File("pajekCluFiles" + File.separator + "output.clu");
+		File file = new File("pajekCluFiles" + File.separator + fileName+".clu");
 		if (!file.exists()) {
 			file.delete();
 		}
@@ -179,9 +178,7 @@ public class ProjectUtils {
 
 		bw.write(str.toString());
 		bw.close();
-		OutputObject oo = new OutputObject();
-		oo.outputStr = str.toString();
-		return oo;
+		
 	}
 
 	public static List<Integer> getAttracterSet(double[][] inputM) {
